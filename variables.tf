@@ -20,13 +20,23 @@ variable "knowledge_base_config" {
     vector_field   = optional(string, "bedrock-knowledge-base-default-vector")
 
     # Knowledge Base Embedding Configuration
-    kb_embedding_model_arn   = optional(string, "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0")
+    kb_embedding_model_arn     = optional(string, "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0")
     embedding_model_dimensions = optional(number, null)
     embedding_data_type        = optional(string, null)
 
     # Supplemental Data Storage Configuration
     create_supplemental_data_storage = optional(bool, false)
     supplemental_data_s3_uri         = optional(string, null)
+
+    # Data Source Configuration
+    create_s3_data_source   = optional(bool, false)
+    data_source_description = optional(string, null)
+    data_deletion_policy    = optional(string, "DELETE")
+    kb_s3_data_source       = optional(string, null)
+    server_side_encryption_configuration = optional(object({
+      encryption_type = string
+      kms_key_arn     = optional(string, null)
+    }), null)
 
     # IAM Configuration
     permissions_boundary_arn = optional(string, null)

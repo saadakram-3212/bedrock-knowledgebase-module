@@ -117,3 +117,33 @@ variable "permissions_boundary_arn" {
   type        = string
   default     = null
 }
+# Data Source Configuration
+variable "create_s3_data_source" {
+  description = "Whether or not to create the S3 data source."
+  type        = bool
+  default     = false
+}
+
+variable "data_source_description" {
+  description = "Description of the data source."
+  type        = string
+  default     = null
+}
+
+variable "data_deletion_policy" {
+  description = "Policy for deleting data from the data source. Can be either DELETE or RETAIN."
+  type        = string
+  default     = "DELETE"
+}
+
+variable "kb_s3_data_source" {
+  description = "The S3 data source ARN for the knowledge base."
+  type        = string
+  default     = null
+}
+
+variable "server_side_encryption_configuration" {
+  description = "Configuration for server-side encryption."
+  type        = any
+  default     = null
+}
