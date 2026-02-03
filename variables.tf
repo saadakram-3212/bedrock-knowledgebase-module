@@ -1,6 +1,6 @@
-variable "knowledge_base_config" {
-  description = "Configuration for AWS Bedrock Knowledge Base with OpenSearch Serverless"
-  type = object({
+variable "knowledge_bases" {
+  description = "List of AWS Bedrock Knowledge Base configurations with OpenSearch Serverless"
+  type = list(object({
     # Knowledge Base Configuration
     create_default_kb = optional(bool, false)
     kb_name           = optional(string, "knowledge-base")
@@ -32,14 +32,9 @@ variable "knowledge_base_config" {
     create_s3_data_source   = optional(bool, false)
     data_source_description = optional(string, null)
     data_deletion_policy    = optional(string, "DELETE")
-    kb_s3_data_source       = optional(string, null)
-    server_side_encryption_configuration = optional(object({
-      encryption_type = string
-      kms_key_arn     = optional(string, null)
-    }), null)
 
     # IAM Configuration
     permissions_boundary_arn = optional(string, null)
-  })
-  default = {}
+  }))
+  default = []
 }

@@ -39,6 +39,6 @@ provider "awscc" {
 }
 
 provider "opensearch" {
-  url         = module.bedrock.opensearch_collection_endpoint
+  url         = module.bedrock["0"].opensearch_collection_endpoint
   healthcheck = false
 }
