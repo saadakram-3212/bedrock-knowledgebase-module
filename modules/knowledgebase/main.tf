@@ -1,25 +1,8 @@
-# – OpenSearch Serverless Default –
-
-resource "random_string" "solution_suffix" {
-  count   = var.create_default_kb ? 1 : 0
-  length  = 4
-  special = false
-  upper   = false
-}
-
-data "aws_caller_identity" "current" {
-  count = var.create_default_kb ? 1 : 0
-}
-
-data "aws_iam_session_context" "current" {
-  count = var.create_default_kb ? 1 : 0
-  arn   = data.aws_caller_identity.current[0].arn
-}
 
 # Create a Collection
 resource "awscc_opensearchserverless_collection" "os_collection" {
   count       = var.create_default_kb ? 1 : 0
-  name        = "os-collection-${random_string.solution_suffix[0].result}"
+  name        = "os-collection-${var.kb_name}"
   type        = "VECTORSEARCH"
   description = "OpenSearch collection created by Terraform."
   depends_on = [
@@ -32,12 +15,12 @@ resource "awscc_opensearchserverless_collection" "os_collection" {
 # Encryption Security Policy
 resource "aws_opensearchserverless_security_policy" "security_policy" {
   count = var.create_default_kb ? 1 : 0
-  name  = "security-policy-${random_string.solution_suffix[0].result}"
+  name  = "security-policy-${var.kb_name}"
   type  = "encryption"
   policy = jsonencode({
     Rules = [
       {
-        Resource     = ["collection/os-collection-${random_string.solution_suffix[0].result}"]
+        Resource     = ["collection/os-collection-${var.kb_name}"]
         ResourceType = "collection"
       }
     ],
@@ -48,14 +31,14 @@ resource "aws_opensearchserverless_security_policy" "security_policy" {
 # Network policy
 resource "aws_opensearchserverless_security_policy" "nw_policy" {
   count = var.create_default_kb && var.allow_opensearch_public_access ? 1 : 0
-  name  = "nw-policy-${random_string.solution_suffix[0].result}"
+  name  = "nw-policy-${var.kb_name}"
   type  = "network"
   policy = jsonencode([
     {
       Rules = [
         {
           ResourceType = "collection"
-          Resource     = ["collection/os-collection-${random_string.solution_suffix[0].result}"]
+          Resource     = ["collection/os-collection-${var.kb_name}"]
         },
       ]
       AllowFromPublic = true,
@@ -66,7 +49,7 @@ resource "aws_opensearchserverless_security_policy" "nw_policy" {
         {
           ResourceType = "dashboard"
           Resource = [
-            "collection/os-collection-${random_string.solution_suffix[0].result}"
+            "collection/os-collection-${var.kb_name}"
           ]
         }
       ],
@@ -78,7 +61,7 @@ resource "aws_opensearchserverless_security_policy" "nw_policy" {
 # Data policy
 resource "aws_opensearchserverless_access_policy" "data_policy" {
   count = var.create_default_kb ? 1 : 0
-  name  = "os-access-policy-${random_string.solution_suffix[0].result}"
+  name  = "os-access-policy-${var.kb_name}"
   type  = "data"
   policy = jsonencode([
     {
@@ -130,7 +113,7 @@ resource "time_sleep" "wait_before_index_creation" {
 
 resource "opensearch_index" "vector_index" {
   count              = var.create_default_kb ? 1 : 0
-  name               = "os-vector-index-${random_string.solution_suffix[0].result}"
+  name               = "os-vector-index-${var.kb_name}"
   number_of_shards   = var.number_of_shards
   number_of_replicas = var.number_of_replicas
   index_knn          = true
@@ -178,7 +161,7 @@ resource "time_sleep" "wait_after_index_creation" {
 }
 
 resource "aws_iam_role" "bedrock_knowledge_base_role" {
-  name = "AmazonBedrockExecutionRoleForKnowledgeBase-dmv"
+  name = "${var.kb_name}-ExecutionRoleForKnowledgeBase"
 
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
@@ -197,7 +180,7 @@ resource "aws_iam_role" "bedrock_knowledge_base_role" {
 
 resource "aws_iam_policy" "bedrock_knowledge_base_policy" {
   count       = var.create_default_kb ? 1 : 0
-  name        = "AmazonBedrockKnowledgeBasePolicy-dmv"
+  name        = "${var.kb_name}-Policy"
   description = "Policy for Bedrock Knowledge Base access"
 
   policy = jsonencode({
@@ -237,7 +220,7 @@ resource "aws_iam_role_policy_attachment" "bedrock_knowledge_base_policy_attachm
 
 resource "awscc_bedrock_knowledge_base" "knowledge_base_default" {
   count       = var.create_default_kb ? 1 : 0
-  name        = "${var.kb_name}-dmv"
+  name        = "${var.kb_name}"
   description = var.kb_description
   role_arn    = var.kb_role_arn != null ? var.kb_role_arn : aws_iam_role.bedrock_knowledge_base_role.arn
   tags        = var.kb_tags
