@@ -147,3 +147,145 @@ variable "server_side_encryption_configuration" {
   type        = any
   default     = null
 }
+
+variable "create_vector_ingestion_configuration" {
+  description = "Whether or not to create a vector ingestion configuration."
+  type        = bool
+  default     = false
+}
+
+# – Data Source Vector Ingestion Configuration –
+
+
+variable "create_custom_tranformation_config" {
+  description = "Whether or not to create a custom transformation configuration."
+  type        = bool
+  default     = false
+}
+
+variable "create_parsing_configuration" {
+  description = "Whether or not to create a parsing configuration."
+  type        = bool
+  default     = false
+}
+
+variable "chunking_strategy" {
+  description = "Knowledge base can split your source data into chunks. A chunk refers to an excerpt from a data source that is returned when the knowledge base that it belongs to is queried. You have the following options for chunking your data. If you opt for NONE, then you may want to pre-process your files by splitting them up such that each file corresponds to a chunk."
+  type        = string
+  default     = null
+}
+
+variable "chunking_strategy_max_tokens" {
+  description = "The maximum number of tokens to include in a chunk."
+  type        = number
+  default     = null
+}
+
+variable "chunking_strategy_overlap_percentage" {
+  description = "The percentage of overlap between adjacent chunks of a data source."
+  type        = number
+  default     = null
+}
+
+variable "level_configurations_list" {
+  description = "Token settings for each layer."
+  type        = list(object({ max_tokens = number }))
+  default     = null
+}
+
+variable "heirarchical_overlap_tokens" {
+  description = "The number of tokens to repeat across chunks in the same layer."
+  type        = number
+  default     = null
+}
+
+variable "breakpoint_percentile_threshold" {
+  description = "The dissimilarity threshold for splitting chunks."
+  type        = number
+  default     = null
+}
+
+variable "semantic_buffer_size" {
+  description = "The buffer size."
+  type        = number
+  default     = null
+}
+
+variable "semantic_max_tokens" {
+  description = "The maximum number of tokens that a chunk can contain."
+  type        = number
+  default     = null
+}
+
+variable "s3_location_uri" {
+  description = "A location for storing content from data sources temporarily as it is processed by custom components in the ingestion pipeline."
+  type        = string
+  default     = null
+}
+
+variable "transformations_list" {
+  description = "A list of Lambda functions that process documents."
+  type = list(object({
+    step_to_apply = optional(string)
+    transformation_function = optional(object({
+      transformation_lambda_configuration = optional(object({
+        lambda_arn = optional(string)
+      }))
+    }))
+  }))
+  default = null
+}
+
+variable "parsing_config_model_arn" {
+  description = "The model's ARN."
+  type        = string
+  default     = null
+}
+
+variable "parsing_prompt_text" {
+  description = "Instructions for interpreting the contents of a document."
+  type        = string
+  default     = null
+}
+
+variable "parsing_strategy" {
+  description = "The parsing strategy for the data source."
+  type        = string
+  default     = null
+}
+
+variable "create_context_enrichment_config" {
+  description = "Whether or not to create context enrichment configuration for the data source."
+  type        = bool
+  default     = false
+}
+
+variable "context_enrichment_type" {
+  description = "Enrichment type to be used for the vector database."
+  type        = string
+  default     = null
+}
+
+variable "context_enrichment_model_arn" {
+  description = "The model's ARN for context enrichment."
+  type        = string
+  default     = null
+}
+
+variable "enrichment_strategy_method" {
+  description = "Enrichment Strategy method."
+  type        = string
+  default     = null
+}
+
+variable "parsing_modality" {
+  description = "Determine how parsed content will be stored."
+  type        = string
+  default     = null
+}
+
+variable "create_bedrock_data_automation_config" {
+  description = "Whether or not to create Bedrock Data Automation configuration for the data source."
+  type        = bool
+  default     = false
+}

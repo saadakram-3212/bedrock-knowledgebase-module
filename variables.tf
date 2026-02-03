@@ -32,6 +32,52 @@ variable "knowledge_bases" {
     create_s3_data_source   = optional(bool, false)
     data_source_description = optional(string, null)
     data_deletion_policy    = optional(string, "DELETE")
+    kb_s3_data_source       = optional(string, null)
+
+    # Vector Ingestion Configuration
+    create_vector_ingestion_configuration = optional(bool, false)
+    create_custom_tranformation_config    = optional(bool, false)
+    create_parsing_configuration          = optional(bool, false)
+
+    # Chunking Strategy Configuration
+    chunking_strategy                    = optional(string, null)
+    chunking_strategy_max_tokens         = optional(number, null)
+    chunking_strategy_overlap_percentage = optional(number, null)
+    
+    # Hierarchical Chunking Configuration
+    level_configurations_list   = optional(list(object({ max_tokens = number })), null)
+    heirarchical_overlap_tokens = optional(number, null)
+    
+    # Semantic Chunking Configuration
+    breakpoint_percentile_threshold = optional(number, null)
+    semantic_buffer_size            = optional(number, null)
+    semantic_max_tokens             = optional(number, null)
+
+    # Custom Transformation Configuration
+    s3_location_uri = optional(string, null)
+    transformations_list = optional(list(object({
+      step_to_apply = optional(string)
+      transformation_function = optional(object({
+        transformation_lambda_configuration = optional(object({
+          lambda_arn = optional(string)
+        }))
+      }))
+    })), null)
+
+    # Parsing Configuration
+    parsing_config_model_arn = optional(string, null)
+    parsing_prompt_text      = optional(string, null)
+    parsing_strategy         = optional(string, null)
+
+    # Context Enrichment Configuration
+    create_context_enrichment_config = optional(bool, false)
+    context_enrichment_type          = optional(string, null)
+    context_enrichment_model_arn     = optional(string, null)
+    enrichment_strategy_method       = optional(string, null)
+
+    # Bedrock Data Automation Configuration
+    create_bedrock_data_automation_config = optional(bool, false)
+    parsing_modality                      = optional(string, null)
 
     # IAM Configuration
     permissions_boundary_arn = optional(string, null)

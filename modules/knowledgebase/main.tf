@@ -120,6 +120,6 @@ resource "awscc_bedrock_data_source" "knowledge_base_ds" {
       bucket_arn              = var.kb_s3_data_source # Create an S3 bucket or reference existing
     }
   }
-  #vector_ingestion_configuration       = var.create_vector_ingestion_configuration == false ? null : local.vector_ingestion_configuration
+  vector_ingestion_configuration       = var.create_vector_ingestion_configuration == false ? null : local.vector_ingestion_configuration
   server_side_encryption_configuration = var.server_side_encryption_configuration
 }

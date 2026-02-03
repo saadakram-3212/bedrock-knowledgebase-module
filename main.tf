@@ -35,6 +35,44 @@ module "bedrock" {
   data_deletion_policy    = each.value.data_deletion_policy
   kb_s3_data_source       = each.value.kb_s3_data_source
 
+  # Vector Ingestion Configuration
+  create_vector_ingestion_configuration = each.value.create_vector_ingestion_configuration
+  create_custom_tranformation_config    = each.value.create_custom_tranformation_config
+  create_parsing_configuration          = each.value.create_parsing_configuration
+
+  # Chunking Strategy Configuration
+  chunking_strategy                    = each.value.chunking_strategy
+  chunking_strategy_max_tokens         = each.value.chunking_strategy_max_tokens
+  chunking_strategy_overlap_percentage = each.value.chunking_strategy_overlap_percentage
+
+  # Hierarchical Chunking Configuration
+  level_configurations_list   = each.value.level_configurations_list
+  heirarchical_overlap_tokens = each.value.heirarchical_overlap_tokens
+
+  # Semantic Chunking Configuration
+  breakpoint_percentile_threshold = each.value.breakpoint_percentile_threshold
+  semantic_buffer_size            = each.value.semantic_buffer_size
+  semantic_max_tokens             = each.value.semantic_max_tokens
+
+  # Custom Transformation Configuration
+  s3_location_uri      = each.value.s3_location_uri
+  transformations_list = each.value.transformations_list
+
+  # Parsing Configuration
+  parsing_config_model_arn = each.value.parsing_config_model_arn
+  parsing_prompt_text      = each.value.parsing_prompt_text
+  parsing_strategy         = each.value.parsing_strategy
+
+  # Context Enrichment Configuration
+  create_context_enrichment_config = each.value.create_context_enrichment_config
+  context_enrichment_type          = each.value.context_enrichment_type
+  context_enrichment_model_arn     = each.value.context_enrichment_model_arn
+  enrichment_strategy_method       = each.value.enrichment_strategy_method
+
+  # Bedrock Data Automation Configuration
+  create_bedrock_data_automation_config = each.value.create_bedrock_data_automation_config
+  parsing_modality                      = each.value.parsing_modality
+
   # IAM Configuration
   permissions_boundary_arn = each.value.permissions_boundary_arn
 }
