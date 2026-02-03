@@ -1,15 +1,39 @@
-output "default_collection" {
-  value       = var.create_default_kb ? module.oss_knowledgebase[0].opensearch_serverless_collection : null
-  description = "Opensearch default collection value."
+output "knowledge_base_id" {
+  description = "The ID of the Bedrock Knowledge Base"
+  value       = var.create_default_kb ? awscc_bedrock_knowledge_base.knowledge_base_default[0].knowledge_base_id : null
 }
 
-output "vector_index" {
-  value       = var.create_default_kb ? module.oss_knowledgebase[0].vector_index : null
-  description = "Opensearch default vector index value in collection."
+output "knowledge_base_arn" {
+  description = "The ARN of the Bedrock Knowledge Base"
+  value       = var.create_default_kb ? awscc_bedrock_knowledge_base.knowledge_base_default[0].knowledge_base_arn : null
 }
 
-output "opensearch_serverless_data_policy" {
-  value       = var.create_default_kb ? module.oss_knowledgebase[0].opensearch_serverless_data_policy : null
-  description = "Opensearch opensearch serverless collection data policy."
+output "opensearch_collection_arn" {
+  description = "The ARN of the OpenSearch Serverless Collection"
+  value       = var.create_default_kb ? awscc_opensearchserverless_collection.os_collection[0].arn : null
 }
 
+output "opensearch_collection_id" {
+  description = "The ID of the OpenSearch Serverless Collection"
+  value       = var.create_default_kb ? awscc_opensearchserverless_collection.os_collection[0].id : null
+}
+
+output "opensearch_collection_name" {
+  description = "The name of the OpenSearch Serverless Collection"
+  value       = var.create_default_kb ? awscc_opensearchserverless_collection.os_collection[0].name : null
+}
+
+output "opensearch_collection_endpoint" {
+  description = "The endpoint of the OpenSearch Serverless Collection"
+  value       = var.create_default_kb ? awscc_opensearchserverless_collection.os_collection[0].collection_endpoint : null
+}
+
+output "vector_index_name" {
+  description = "The name of the vector index"
+  value       = var.create_default_kb ? opensearch_index.vector_index[0].name : null
+}
+
+output "bedrock_kb_role_arn" {
+  description = "The ARN of the IAM role for Bedrock Knowledge Base"
+  value       = aws_iam_role.bedrock_knowledge_base_role.arn
+}
