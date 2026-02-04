@@ -205,3 +205,120 @@ variable "kendra_index_role_arn" {
 #   default     = false
 # }
 # ==============================================================================
+
+
+# Kendra Web Crawler Variables
+variable "create_kendra_web_crawler" {
+  description = "Whether to create a Kendra web crawler data source"
+  type        = bool
+  default     = false
+}
+
+variable "kendra_web_crawler_description" {
+  description = "Description for the Kendra web crawler"
+  type        = string
+  default     = "Kendra web crawler data source"
+}
+
+variable "kendra_datasource_role_arn" {
+  description = "IAM role ARN for Kendra data source"
+  type        = string
+  default     = null
+}
+
+variable "kendra_web_crawler_schedule" {
+  description = "Schedule for web crawler (cron expression)"
+  type        = string
+  default     = null # e.g., "cron(0 12 * * ? *)"
+}
+
+variable "seed_urls" {
+  description = "List of seed URLs for web crawler"
+  type        = list(string)
+  default     = []
+}
+
+variable "web_crawler_mode" {
+  description = "Web crawler mode: HOST_ONLY, SUBDOMAINS, or EVERYTHING"
+  type        = string
+  default     = "HOST_ONLY"
+}
+
+variable "site_maps" {
+  description = "List of sitemap URLs"
+  type        = list(string)
+  default     = null
+}
+
+variable "crawl_depth" {
+  description = "Depth of web crawling (0-10)"
+  type        = number
+  default     = 2
+}
+
+variable "max_links_per_page" {
+  description = "Maximum number of links per page to crawl"
+  type        = number
+  default     = 100
+}
+
+variable "max_content_size_per_page" {
+  description = "Maximum content size per page in megabytes"
+  type        = number
+  default     = 50
+}
+
+variable "max_urls_per_minute" {
+  description = "Maximum URLs to crawl per minute"
+  type        = number
+  default     = 300
+}
+
+variable "url_inclusion_patterns" {
+  description = "URL patterns to include in crawling"
+  type        = list(string)
+  default     = null
+}
+
+variable "url_exclusion_patterns" {
+  description = "URL patterns to exclude from crawling"
+  type        = list(string)
+  default     = null
+}
+
+variable "proxy_host" {
+  description = "Proxy host for web crawler"
+  type        = string
+  default     = null
+}
+
+variable "proxy_port" {
+  description = "Proxy port for web crawler"
+  type        = number
+  default     = null
+}
+
+variable "proxy_credentials_secret_arn" {
+  description = "ARN of secret containing proxy credentials"
+  type        = string
+  default     = null
+}
+
+variable "basic_auth_configs" {
+  description = "List of basic authentication configurations for websites"
+  type = list(object({
+    credentials = string
+    host        = string
+    port        = number
+  }))
+  default     = null
+}
+
+variable "kendra_datasource_tags" {
+  description = "Tags for Kendra data source"
+  type = list(object({
+    key   = string
+    value = string
+  }))
+  default     = []
+}

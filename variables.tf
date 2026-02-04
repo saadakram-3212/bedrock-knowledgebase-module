@@ -151,6 +151,17 @@ variable "knowledge_bases" {
 
     kendra_index_role_arn = optional(string, null)
 
+    # #WEBCRAWLER CONFIG
+        
+    # create_web_crawler = optional(bool, false)
+    # rate_limit = optional(number, null)
+    # max_pages = optional(number, null)
+    # exclusion_filters = optional(list(string), [])
+    # inclusion_filters = optional(list(string), [])
+    # crawler_scope = optional(string, null)
+    # user_agent = optional(string, null)
+    # seed_urls = optional(list(object({ url = string })), [])
+
   }))
   default = []
 }

@@ -38,6 +38,12 @@ knowledge_bases = [
     kendra_index_name = "kendra-genai-index"
     kendra_index_edition = "GEN_AI_ENTERPRISE_EDITION"
 
-    # Use an existing Kendra index
+    # # WEB CRAWLER
+    # create_web_crawler       = true
+    #     seed_urls = [
+    #   { url = "https://docs.aws.amazon.com/bedrock/" },
+    #   { url = "https://aws.amazon.com/bedrock/" }
+    # ]
+ 
   }
 ]

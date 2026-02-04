@@ -173,4 +173,14 @@ module "bedrock" {
     : null
   )
 
+  #Web Crawler Configuration
+#   create_web_crawler = each.value.create_web_crawler
+#   rate_limit        = each.value.rate_limit
+#   max_pages         = each.value.max_pages
+#   exclusion_filters = each.value.exclusion_filters
+#   inclusion_filters = each.value.inclusion_filters
+#   crawler_scope    = each.value.crawler_scope
+#   user_agent       = each.value.user_agent
+#   seed_urls        = each.value.seed_urls
+
 }

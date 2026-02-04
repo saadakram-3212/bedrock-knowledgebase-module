@@ -303,3 +303,53 @@ variable "kendra_index_arn" {
   type        = string
   default     = null
 }
+
+# ## Web Crawler
+# variable "create_web_crawler" {
+#   description = "Whether or not create a web crawler data source."
+#   type        = bool
+#   default     = false
+# }
+
+# variable "rate_limit" {
+#   description = "Rate of web URLs retrieved per minute."
+#   type        = number
+#   default     = null
+# }
+
+# variable "max_pages" {
+#   description = "Maximum number of pages the crawler can crawl."
+#   type        = number
+#   default     = null
+# }
+
+# variable "exclusion_filters" {
+#   description = "A set of regular expression filter patterns for a type of object."
+#   type        = list(string)
+#   default     = []
+# }
+
+# variable "inclusion_filters" {
+#   description = "A set of regular expression filter patterns for a type of object."
+#   type        = list(string)
+#   default     = []
+# }
+
+# variable "crawler_scope" {
+#   description = "The scope that a web crawl job will be restricted to."
+#   type        = string
+#   default     = null
+# }
+
+# variable "user_agent" {
+#   description = "The suffix that will be included in the user agent header for web crawling."
+#   type        = string
+#   default     = null
+# }
+
+# variable "seed_urls" {
+#   description = "A list of web urls."
+#   type        = list(object({ url = string }))
+#   default     = []
+# }
+

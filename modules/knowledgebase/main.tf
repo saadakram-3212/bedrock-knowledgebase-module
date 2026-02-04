@@ -175,3 +175,33 @@ resource "awscc_bedrock_knowledge_base" "knowledge_base_kendra" {
   }
 
 }
+
+
+# resource "awscc_bedrock_data_source" "knowledge_base_web_crawler" {
+#   count             = var.create_web_crawler ? 1 : 0
+#   knowledge_base_id = var.create_default_kb ? awscc_bedrock_knowledge_base.knowledge_base_default[0].id : awscc_bedrock_knowledge_base.knowledge_base_kendra[0].id
+#   name              = "${var.kb_name}DataSourceWebCrawler"
+#   description       = var.data_source_description
+#   data_source_configuration = {
+#     type = "WEB"
+#     web_configuration = {
+#       crawler_configuration = {
+#         crawler_limits = {
+#           rate_limit = var.rate_limit
+#           max_pages  = var.max_pages
+#         }
+#         exclusion_filters = length(var.exclusion_filters) > 0 ? var.exclusion_filters : null
+#         inclusion_filters = length(var.inclusion_filters) > 0 ? var.inclusion_filters : null
+#         scope             = var.crawler_scope
+#         user_agent        = var.user_agent
+#       }
+#       source_configuration = {
+#         url_configuration = {
+#           seed_urls = var.seed_urls
+#         }
+#       }
+#     }
+#   }
+#   vector_ingestion_configuration       = var.create_vector_ingestion_configuration == false ? null : local.vector_ingestion_configuration
+#   server_side_encryption_configuration = var.server_side_encryption_configuration
+# }
