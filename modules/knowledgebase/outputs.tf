@@ -1,11 +1,11 @@
 output "knowledge_base_id" {
   description = "The ID of the Bedrock Knowledge Base"
-  value       = var.create_default_kb ? awscc_bedrock_knowledge_base.knowledge_base_default[0].knowledge_base_id : null
+  value       = var.create_default_kb ? awscc_bedrock_knowledge_base.knowledge_base_default[0].knowledge_base_id : (var.create_kendra_config ? awscc_bedrock_knowledge_base.knowledge_base_kendra[0].knowledge_base_id : null)
 }
 
 output "knowledge_base_arn" {
   description = "The ARN of the Bedrock Knowledge Base"
-  value       = var.create_default_kb ? awscc_bedrock_knowledge_base.knowledge_base_default[0].knowledge_base_arn : null
+  value       = var.create_default_kb ? awscc_bedrock_knowledge_base.knowledge_base_default[0].knowledge_base_arn : (var.create_kendra_config ? awscc_bedrock_knowledge_base.knowledge_base_kendra[0].knowledge_base_arn : null)
 }
 
 output "opensearch_collection_arn" {
@@ -45,9 +45,8 @@ output "bedrock_kb_role_arn" {
 
 output "knowledge_base_name" {
   description = "The name of the knowledge base"
-  value       = var.create_default_kb ? awscc_bedrock_knowledge_base.knowledge_base_default[0].name : null
+  value       = var.create_default_kb ? awscc_bedrock_knowledge_base.knowledge_base_default[0].name : (var.create_kendra_config ? awscc_bedrock_knowledge_base.knowledge_base_kendra[0].name : null)
 }
-
 # Data Source Outputs
 output "data_source_id" {
   description = "The ID of the Bedrock data source"
