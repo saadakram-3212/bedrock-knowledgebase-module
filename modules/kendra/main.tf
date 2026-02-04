@@ -60,7 +60,6 @@ resource "time_sleep" "wait_after_kendra_index_creation" {
 
 
 # Create Kendra Web Crawler v2 Data Source
-# Create Kendra Web Crawler v2 Data Source
 resource "aws_kendra_data_source" "web_crawler_v2" {
   count    = var.create_web_crawler ? 1 : 0
   index_id = awscc_kendra_index.genai_kendra_index[0].id
