@@ -4,6 +4,26 @@
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
+resource "aws_iam_role" "WebCrawlerRole" {
+  name = "kendra-web-crawler-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "kendra.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+
+
+  
+}
+
 # ============================================================
 # Shared IAM Role for ALL Kendra Indexes
 # ============================================================
@@ -44,6 +64,8 @@ resource "aws_iam_role_policy" "kendra_basic_logging" {
   })
 }
 
+
+
 # ============================================================
 # Kendra Module
 # Only created for KBs where create_kendra_config = true
@@ -80,6 +102,26 @@ module "kendra" {
 
   # Shared IAM role for any created index
   kendra_index_role_arn = aws_iam_role.kendra_index_role.arn
+
+  # Web Crawler V2 Configuration
+  create_web_crawler            = each.value.create_web_crawler
+  web_crawler_name              = each.value.web_crawler_name
+  web_crawler_description       = each.value.web_crawler_description
+  web_crawler_role_arn          = aws_iam_role.WebCrawlerRole.arn
+  web_crawler_seed_urls         = each.value.web_crawler_seed_urls
+  web_crawler_sync_mode         = each.value.web_crawler_sync_mode
+  web_crawler_field_mappings    = each.value.web_crawler_field_mappings
+  web_crawler_crawl_depth       = each.value.web_crawler_crawl_depth
+  web_crawler_max_links_per_url = each.value.web_crawler_max_links_per_url
+  web_crawler_max_file_size     = each.value.web_crawler_max_file_size
+  web_crawler_rate_limit        = each.value.web_crawler_rate_limit
+  web_crawler_crawl_subdomain   = each.value.web_crawler_crawl_subdomain
+  web_crawler_crawl_all_domain  = each.value.web_crawler_crawl_all_domain
+  web_crawler_honor_robots      = each.value.web_crawler_honor_robots
+  web_crawler_crawl_attachments = each.value.web_crawler_crawl_attachments
+  web_crawler_schedule          = each.value.web_crawler_schedule
+  web_crawler_language_code     = each.value.web_crawler_language_code
+  web_crawler_tags              = each.value.web_crawler_tags
 }
 
 # ============================================================

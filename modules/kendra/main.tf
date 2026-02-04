@@ -57,44 +57,62 @@ resource "time_sleep" "wait_after_kendra_index_creation" {
 #   create_duration = "60s" # Wait for 60 seconds
 # }
 
-resource "awscc_kendra_data_source" "kendra_web_crawler" {
-  count        = var.create_kendra_web_crawler ? 1 : 0
-  index_id     = var.kendra_index_arn != null ? split("/", var.kendra_index_arn)[1] : awscc_kendra_index.genai_kendra_index[0].id
-  name         = "${var.kendra_index_name}-KendraWebCrawler"
-  type         = "WEBCRAWLER"
-  description  = var.kendra_web_crawler_description
-  role_arn     = var.kendra_datasource_role_arn
-  schedule     = var.kendra_web_crawler_schedule # e.g., "cron(0 12 * * ? *)"
 
-  data_source_configuration = {
-    web_crawler_configuration = {
-      urls = {
-        seed_url_configuration = {
-          seed_urls         = var.seed_urls
-          web_crawler_mode  = var.web_crawler_mode # "HOST_ONLY" or "SUBDOMAINS" or "EVERYTHING"
+
+# Create Kendra Web Crawler v2 Data Source
+# Create Kendra Web Crawler v2 Data Source
+resource "aws_kendra_data_source" "web_crawler_v2" {
+  count    = var.create_web_crawler ? 1 : 0
+  index_id = awscc_kendra_index.genai_kendra_index[0].id
+  name     = var.web_crawler_name
+  type     = "TEMPLATE"
+  role_arn = var.web_crawler_role_arn
+
+  configuration {
+    template_configuration {
+      template = jsonencode({
+        version  = "1.0.0"
+        type     = "WEBCRAWLERV2"
+        syncMode = var.web_crawler_sync_mode
+        
+        connectionConfiguration = {
+          repositoryEndpointMetadata = {
+            seedUrlConnections = [
+              for url in var.web_crawler_seed_urls : {
+                seedUrl = url
+              }
+            ]
+          }
         }
-        site_maps_configuration = var.site_maps != null ? {
-          site_maps = var.site_maps
-        } : null
-      }
-      crawl_depth                         = var.crawl_depth # e.g., 2
-      max_links_per_page                  = var.max_links_per_page # e.g., 100
-      max_content_size_per_page_in_mega_bytes = var.max_content_size_per_page # e.g., 50
-      max_urls_per_minute_crawl_rate      = var.max_urls_per_minute # e.g., 300
-      url_inclusion_patterns              = var.url_inclusion_patterns
-      url_exclusion_patterns              = var.url_exclusion_patterns
-      
-      proxy_configuration = var.proxy_host != null ? {
-        host        = var.proxy_host
-        port        = var.proxy_port
-        credentials = var.proxy_credentials_secret_arn
-      } : null
-
-      authentication_configuration = var.basic_auth_configs != null ? {
-        basic_authentication = var.basic_auth_configs
-      } : null
+        
+        repositoryConfigurations = {
+          webPage = {
+            fieldMappings = var.web_crawler_field_mappings
+          }
+        }
+        
+        additionalProperties = {
+          crawlDepth       = var.web_crawler_crawl_depth
+          maxLinksPerUrl   = var.web_crawler_max_links_per_url
+          maxFileSize      = var.web_crawler_max_file_size
+          rateLimit        = var.web_crawler_rate_limit
+          crawlSubDomain   = var.web_crawler_crawl_subdomain
+          crawlAllDomain   = var.web_crawler_crawl_all_domain
+          honorRobots      = var.web_crawler_honor_robots
+          crawlAttachments = var.web_crawler_crawl_attachments
+        }
+      })
     }
   }
 
-  tags = var.kendra_datasource_tags
+  depends_on = [
+    awscc_kendra_index.genai_kendra_index,
+    time_sleep.wait_after_kendra_index_creation
+  ]
+}
+
+resource "time_sleep" "wait_after_web_crawler_creation" {
+  count           = var.create_web_crawler ? 1 : 0
+  depends_on      = [aws_kendra_data_source.web_crawler_v2[0]]
+  create_duration = "60s"
 }

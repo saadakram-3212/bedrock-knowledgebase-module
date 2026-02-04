@@ -22,28 +22,37 @@ knowledge_bases = [
   },
 
   # ============================================================
-  # Knowledge Base #2 (Kendra GenAI)
+  # Knowledge Base #2 (Kendra GenAI with Web Crawler)
   # ============================================================
   {
     create_default_kb = false
     kb_name           = "my-kendra-kb"
-    kb_description    = "Knowledge base backed by Amazon Kendra GenAI"
+    kb_description    = "Knowledge base backed by Amazon Kendra GenAI with Web Crawler"
     kb_tags = {
       Environment = "dev"
     }
 
     # Enable Kendra
-    create_kendra_config = true
-    kendra_index_arn       = null
-    kendra_index_name = "kendra-genai-index"
-    kendra_index_edition = "GEN_AI_ENTERPRISE_EDITION"
+    create_kendra_config     = true
+    kendra_index_arn         = null
+    kendra_index_name        = "kendra-genai-index"
+    kendra_index_edition     = "GEN_AI_ENTERPRISE_EDITION"
+    kendra_index_description = "Kendra index with web crawler for AWS documentation"
 
-    # # WEB CRAWLER
-    # create_web_crawler       = true
-    #     seed_urls = [
-    #   { url = "https://docs.aws.amazon.com/bedrock/" },
-    #   { url = "https://aws.amazon.com/bedrock/" }
-    # ]
- 
+    # Web Crawler Configuration
+    create_web_crawler = true
+    web_crawler_name   = "aws-docs-crawler"
+    web_crawler_description = "Crawls AWS Bedrock documentation"
+    
+    web_crawler_seed_urls = [
+      "https://docs.aws.amazon.com/bedrock/",
+      "https://aws.amazon.com/bedrock/"
+    ]
+    
+    web_crawler_sync_mode      = "FULL_CRAWL"
+    web_crawler_crawl_depth    = "2"
+    web_crawler_max_links_per_url = "100"
+    web_crawler_crawl_subdomain   = true
+    web_crawler_honor_robots      = true
   }
 ]

@@ -206,119 +206,118 @@ variable "kendra_index_role_arn" {
 # }
 # ==============================================================================
 
+// ...existing code...
 
-# Kendra Web Crawler Variables
-variable "create_kendra_web_crawler" {
-  description = "Whether to create a Kendra web crawler data source"
+
+// ...existing code...
+
+
+variable "create_web_crawler" {
+  description = "Whether or not to create a Kendra Web Crawler v2 data source."
   type        = bool
   default     = false
 }
 
-variable "kendra_web_crawler_description" {
-  description = "Description for the Kendra web crawler"
+variable "web_crawler_name" {
+  description = "The name of the Web Crawler data source."
   type        = string
-  default     = "Kendra web crawler data source"
+  default     = "web-crawler-v2"
 }
 
-variable "kendra_datasource_role_arn" {
-  description = "IAM role ARN for Kendra data source"
+variable "web_crawler_description" {
+  description = "A description for the Web Crawler data source."
   type        = string
   default     = null
 }
 
-variable "kendra_web_crawler_schedule" {
-  description = "Schedule for web crawler (cron expression)"
+variable "web_crawler_role_arn" {
+  description = "The ARN of the IAM role for the Web Crawler data source."
   type        = string
-  default     = null # e.g., "cron(0 12 * * ? *)"
+  default     = null
 }
 
-variable "seed_urls" {
-  description = "List of seed URLs for web crawler"
+variable "web_crawler_seed_urls" {
+  description = "List of seed URLs to crawl."
   type        = list(string)
+  default     = ["https://docs.aws.amazon.com/bedrock/"]
+}
+
+variable "web_crawler_sync_mode" {
+  description = "The sync mode for the web crawler. Valid values: FULL_CRAWL, FORCED_FULL_CRAWL."
+  type        = string
+  default     = "FULL_CRAWL"
+}
+
+variable "web_crawler_field_mappings" {
+  description = "Field mappings for web page content."
+  type        = list(any)
   default     = []
 }
 
-variable "web_crawler_mode" {
-  description = "Web crawler mode: HOST_ONLY, SUBDOMAINS, or EVERYTHING"
+variable "web_crawler_crawl_depth" {
+  description = "The number of levels from the seed URL to crawl."
   type        = string
-  default     = "HOST_ONLY"
+  default     = "2"
 }
 
-variable "site_maps" {
-  description = "List of sitemap URLs"
-  type        = list(string)
-  default     = null
-}
-
-variable "crawl_depth" {
-  description = "Depth of web crawling (0-10)"
-  type        = number
-  default     = 2
-}
-
-variable "max_links_per_page" {
-  description = "Maximum number of links per page to crawl"
-  type        = number
-  default     = 100
-}
-
-variable "max_content_size_per_page" {
-  description = "Maximum content size per page in megabytes"
-  type        = number
-  default     = 50
-}
-
-variable "max_urls_per_minute" {
-  description = "Maximum URLs to crawl per minute"
-  type        = number
-  default     = 300
-}
-
-variable "url_inclusion_patterns" {
-  description = "URL patterns to include in crawling"
-  type        = list(string)
-  default     = null
-}
-
-variable "url_exclusion_patterns" {
-  description = "URL patterns to exclude from crawling"
-  type        = list(string)
-  default     = null
-}
-
-variable "proxy_host" {
-  description = "Proxy host for web crawler"
+variable "web_crawler_max_links_per_url" {
+  description = "The maximum number of URLs on a web page to include when crawling."
   type        = string
-  default     = null
+  default     = "100"
 }
 
-variable "proxy_port" {
-  description = "Proxy port for web crawler"
-  type        = number
-  default     = null
+variable "web_crawler_max_file_size" {
+  description = "The maximum size (in MB) of a web page or attachment to crawl."
+  type        = string
+  default     = "50"
 }
 
-variable "proxy_credentials_secret_arn" {
-  description = "ARN of secret containing proxy credentials"
+variable "web_crawler_rate_limit" {
+  description = "The maximum number of URLs crawled per website host per minute."
+  type        = string
+  default     = "300"
+}
+
+variable "web_crawler_crawl_subdomain" {
+  description = "Whether to crawl subdomains."
+  type        = bool
+  default     = true
+}
+
+variable "web_crawler_crawl_all_domain" {
+  description = "Whether to crawl all domains that the web pages link to."
+  type        = bool
+  default     = false
+}
+
+variable "web_crawler_honor_robots" {
+  description = "Whether to respect robots.txt directives."
+  type        = bool
+  default     = true
+}
+
+variable "web_crawler_crawl_attachments" {
+  description = "Whether to crawl files that the web pages link to."
+  type        = bool
+  default     = false
+}
+
+variable "web_crawler_schedule" {
+  description = "The schedule for Amazon Kendra to update the web crawler index."
   type        = string
   default     = null
 }
 
-variable "basic_auth_configs" {
-  description = "List of basic authentication configurations for websites"
-  type = list(object({
-    credentials = string
-    host        = string
-    port        = number
-  }))
+variable "web_crawler_language_code" {
+  description = "The language code for the web crawler data source."
+  type        = string
+  default     = "en"
+}
+
+variable "web_crawler_tags" {
+  description = "A map of tags for the web crawler data source."
+  type        = map(string)
   default     = null
 }
 
-variable "kendra_datasource_tags" {
-  description = "Tags for Kendra data source"
-  type = list(object({
-    key   = string
-    value = string
-  }))
-  default     = []
-}
+# ==============================================================

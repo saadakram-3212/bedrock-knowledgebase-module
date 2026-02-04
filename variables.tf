@@ -90,9 +90,6 @@ variable "knowledge_bases" {
 
     kendra_index_arn = optional(string, null)
 
-    # NOT USED IN PROVIDED CODE (kept for completeness)
-    # kendra_index_id = optional(string, null)
-
     kendra_index_name = optional(string, "test-index")
 
     kendra_index_edition = optional(string, "DEVELOPER_EDITION")
@@ -151,16 +148,45 @@ variable "knowledge_bases" {
 
     kendra_index_role_arn = optional(string, null)
 
-    # #WEBCRAWLER CONFIG
-        
-    # create_web_crawler = optional(bool, false)
-    # rate_limit = optional(number, null)
-    # max_pages = optional(number, null)
-    # exclusion_filters = optional(list(string), [])
-    # inclusion_filters = optional(list(string), [])
-    # crawler_scope = optional(string, null)
-    # user_agent = optional(string, null)
-    # seed_urls = optional(list(object({ url = string })), [])
+    # ============================================================
+    # – Kendra Web Crawler V2 Configuration –
+    # ============================================================
+
+    create_web_crawler = optional(bool, false)
+
+    web_crawler_name = optional(string, "web-crawler-v2")
+
+    web_crawler_description = optional(string, null)
+
+    web_crawler_role_arn = optional(string, null)
+
+    web_crawler_seed_urls = optional(list(string), ["https://docs.aws.amazon.com/bedrock/"])
+
+    web_crawler_sync_mode = optional(string, "FULL_CRAWL")
+
+    web_crawler_field_mappings = optional(list(any), [])
+
+    web_crawler_crawl_depth = optional(string, "2")
+
+    web_crawler_max_links_per_url = optional(string, "100")
+
+    web_crawler_max_file_size = optional(string, "50")
+
+    web_crawler_rate_limit = optional(string, "300")
+
+    web_crawler_crawl_subdomain = optional(bool, true)
+
+    web_crawler_crawl_all_domain = optional(bool, false)
+
+    web_crawler_honor_robots = optional(bool, true)
+
+    web_crawler_crawl_attachments = optional(bool, false)
+
+    web_crawler_schedule = optional(string, null)
+
+    web_crawler_language_code = optional(string, "en")
+
+    web_crawler_tags = optional(map(string), null)
 
   }))
   default = []
