@@ -1,5 +1,5 @@
- locals{
-    vector_ingestion_configuration = {
+locals {
+  vector_ingestion_configuration = {
     chunking_configuration = var.chunking_strategy == null ? null : {
       chunking_strategy = var.chunking_strategy
       fixed_size_chunking_configuration = var.chunking_strategy_max_tokens == null ? null : {
@@ -47,4 +47,4 @@
       parsing_strategy = var.parsing_strategy
     }
   }
- }
+}

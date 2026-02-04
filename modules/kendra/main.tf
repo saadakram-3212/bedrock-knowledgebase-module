@@ -2,7 +2,7 @@
 resource "awscc_kendra_index" "genai_kendra_index" {
   count       = var.create_kendra_config && var.kendra_index_arn == null ? 1 : 0
   edition     = var.kendra_index_edition
-  name        = "${var.kendra_index_name}"
+  name        = var.kendra_index_name
   role_arn    = var.kendra_index_role_arn
   description = var.kendra_index_description
   capacity_units = {
@@ -73,7 +73,7 @@ resource "aws_kendra_data_source" "web_crawler_v2" {
         version  = "1.0.0"
         type     = "WEBCRAWLERV2"
         syncMode = var.web_crawler_sync_mode
-        
+
         connectionConfiguration = {
           repositoryEndpointMetadata = {
             seedUrlConnections = [
@@ -83,13 +83,13 @@ resource "aws_kendra_data_source" "web_crawler_v2" {
             ]
           }
         }
-        
+
         repositoryConfigurations = {
           webPage = {
             fieldMappings = var.web_crawler_field_mappings
           }
         }
-        
+
         additionalProperties = {
           crawlDepth       = var.web_crawler_crawl_depth
           maxLinksPerUrl   = var.web_crawler_max_links_per_url

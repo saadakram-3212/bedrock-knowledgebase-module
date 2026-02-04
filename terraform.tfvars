@@ -40,17 +40,17 @@ knowledge_bases = [
     kendra_index_description = "Kendra index with web crawler for AWS documentation"
 
     # Web Crawler Configuration
-    create_web_crawler = true
-    web_crawler_name   = "aws-docs-crawler"
+    create_web_crawler      = true
+    web_crawler_name        = "aws-docs-crawler"
     web_crawler_description = "Crawls AWS Bedrock documentation"
-    
+
     web_crawler_seed_urls = [
       "https://docs.aws.amazon.com/bedrock/",
       "https://aws.amazon.com/bedrock/"
     ]
-    
-    web_crawler_sync_mode      = "FULL_CRAWL"
-    web_crawler_crawl_depth    = "2"
+
+    web_crawler_sync_mode         = "FULL_CRAWL"
+    web_crawler_crawl_depth       = "2"
     web_crawler_max_links_per_url = "100"
     web_crawler_crawl_subdomain   = true
     web_crawler_honor_robots      = true

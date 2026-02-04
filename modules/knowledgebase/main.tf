@@ -72,7 +72,7 @@ resource "aws_iam_role_policy_attachment" "bedrock_knowledge_base_policy_attachm
 
 resource "awscc_bedrock_knowledge_base" "knowledge_base_default" {
   count       = var.create_default_kb ? 1 : 0
-  name        = "${var.kb_name}"
+  name        = var.kb_name
   description = var.kb_description
   role_arn    = var.kb_role_arn != null ? var.kb_role_arn : aws_iam_role.bedrock_knowledge_base_role.arn
   tags        = var.kb_tags
@@ -124,7 +124,7 @@ resource "awscc_bedrock_data_source" "knowledge_base_ds" {
   data_source_configuration = {
     type = "S3"
     s3_configuration = {
-      bucket_arn              = var.kb_s3_data_source # Create an S3 bucket or reference existing
+      bucket_arn = var.kb_s3_data_source # Create an S3 bucket or reference existing
     }
   }
   vector_ingestion_configuration       = var.create_vector_ingestion_configuration == false ? null : local.vector_ingestion_configuration
@@ -171,7 +171,7 @@ resource "awscc_bedrock_knowledge_base" "knowledge_base_kendra" {
   knowledge_base_configuration = {
     type = "KENDRA"
     kendra_knowledge_base_configuration = {
-            kendra_index_arn = var.kendra_index_arn    }
+    kendra_index_arn = var.kendra_index_arn }
   }
 
 }
