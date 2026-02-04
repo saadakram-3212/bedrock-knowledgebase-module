@@ -1,3 +1,90 @@
+# ============================================================
+# Data Sources
+# ============================================================
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
+# ============================================================
+# Shared IAM Role for ALL Kendra Indexes
+# ============================================================
+resource "aws_iam_role" "kendra_index_role" {
+  name = "kendra-genai-index-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "kendra.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "kendra_basic_logging" {
+  name = "kendra-basic-logging"
+  role = aws_iam_role.kendra_index_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# ============================================================
+# Kendra Module
+# Only created for KBs where create_kendra_config = true
+# ============================================================
+module "kendra" {
+  source = "./modules/kendra"
+
+  for_each = {
+    for idx, kb in var.knowledge_bases :
+    idx => kb
+    if kb.create_kendra_config == true
+  }
+
+  # Core toggle
+  create_kendra_config = each.value.create_kendra_config
+
+  # Existing index support
+  kendra_index_arn = each.value.kendra_index_arn
+
+  # Index creation settings
+  kendra_index_name        = each.value.kendra_index_name
+  kendra_index_edition     = each.value.kendra_index_edition
+  kendra_index_description = each.value.kendra_index_description
+
+  kendra_index_query_capacity   = each.value.kendra_index_query_capacity
+  kendra_index_storage_capacity = each.value.kendra_index_storage_capacity
+
+  # Optional configs
+  kendra_index_tags                = each.value.kendra_index_tags
+  user_token_configurations        = each.value.user_token_configurations
+  kendra_kms_key_id                = each.value.kendra_kms_key_id
+  kendra_index_user_context_policy = each.value.kendra_index_user_context_policy
+  document_metadata_configurations = each.value.document_metadata_configurations
+
+  # Shared IAM role for any created index
+  kendra_index_role_arn = aws_iam_role.kendra_index_role.arn
+}
+
+# ============================================================
+# Bedrock Knowledge Base Module
+# ============================================================
 module "bedrock" {
   source   = "./modules/knowledgebase"
   for_each = { for idx, kb in var.knowledge_bases : idx => kb }
@@ -75,4 +162,15 @@ module "bedrock" {
 
   # IAM Configuration
   permissions_boundary_arn = each.value.permissions_boundary_arn
+
+  # Kendra toggle
+  create_kendra_config = each.value.create_kendra_config
+
+  # If Kendra is enabled for this KB, pull the ARN from the matching kendra module instance
+  kendra_index_arn = (
+    each.value.create_kendra_config == true
+    ? module.kendra[each.key].kendra_index_arn
+    : null
+  )
+
 }

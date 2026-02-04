@@ -289,3 +289,17 @@ variable "create_bedrock_data_automation_config" {
   type        = bool
   default     = false
 }
+
+
+## Kendra 
+variable "create_kendra_config" {
+  description = "Whether or not to create a Kendra GenAI knowledge base."
+  type        = bool
+  default     = false
+}
+
+variable "kendra_index_arn" {
+  description = "The ARN of the existing Kendra index."
+  type        = string
+  default     = null
+}

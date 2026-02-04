@@ -17,6 +17,13 @@ resource "aws_iam_role" "bedrock_knowledge_base_role" {
           "Service" : "bedrock.amazonaws.com"
         },
         "Action" : "sts:AssumeRole"
+      },
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "kendra.amazonaws.com"
+        },
+        "Action" : "sts:AssumeRole"
       }
     ]
   })
@@ -122,4 +129,49 @@ resource "awscc_bedrock_data_source" "knowledge_base_ds" {
   }
   vector_ingestion_configuration       = var.create_vector_ingestion_configuration == false ? null : local.vector_ingestion_configuration
   server_side_encryption_configuration = var.server_side_encryption_configuration
+}
+
+
+### Kendra Bedrock
+
+resource "aws_iam_policy" "bedrock_kb_kendra" {
+  count = var.kb_role_arn != null || var.create_kendra_config == false ? 0 : 1
+  name  = "AmazonBedrockKnowledgeBaseKendraIndexAccessStatement_${var.kb_name}"
+
+  policy = jsonencode({
+    "Version" = "2012-10-17"
+    "Statement" = [
+      {
+        "Action" = [
+          "kendra:Retrieve",
+          "kendra:DescribeIndex"
+        ]
+        "Effect"   = "Allow"
+        "Resource" = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "bedrock_knowledge_base_kendra_policy_attachment" {
+  count      = var.kb_role_arn != null || var.create_kendra_config == false ? 0 : 1
+  role       = aws_iam_role.bedrock_knowledge_base_role.name
+  policy_arn = aws_iam_policy.bedrock_kb_kendra[0].arn
+}
+
+
+
+resource "awscc_bedrock_knowledge_base" "knowledge_base_kendra" {
+  count       = var.create_kendra_config ? 1 : 0
+  name        = "kendra-${var.kb_name}"
+  description = var.kb_description
+  role_arn    = var.kb_role_arn != null ? var.kb_role_arn : aws_iam_role.bedrock_knowledge_base_role.arn
+  tags        = var.kb_tags
+
+  knowledge_base_configuration = {
+    type = "KENDRA"
+    kendra_knowledge_base_configuration = {
+            kendra_index_arn = var.kendra_index_arn    }
+  }
+
 }

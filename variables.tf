@@ -43,11 +43,11 @@ variable "knowledge_bases" {
     chunking_strategy                    = optional(string, null)
     chunking_strategy_max_tokens         = optional(number, null)
     chunking_strategy_overlap_percentage = optional(number, null)
-    
+
     # Hierarchical Chunking Configuration
     level_configurations_list   = optional(list(object({ max_tokens = number })), null)
     heirarchical_overlap_tokens = optional(number, null)
-    
+
     # Semantic Chunking Configuration
     breakpoint_percentile_threshold = optional(number, null)
     semantic_buffer_size            = optional(number, null)
@@ -81,6 +81,76 @@ variable "knowledge_bases" {
 
     # IAM Configuration
     permissions_boundary_arn = optional(string, null)
+
+    # ============================================================
+    # – Kendra GenAI Knowledge Base –
+    # ============================================================
+
+    create_kendra_config = optional(bool, false)
+
+    kendra_index_arn = optional(string, null)
+
+    # NOT USED IN PROVIDED CODE (kept for completeness)
+    # kendra_index_id = optional(string, null)
+
+    kendra_index_name = optional(string, "test-index")
+
+    kendra_index_edition = optional(string, "DEVELOPER_EDITION")
+
+    kendra_index_description = optional(string, null)
+
+    kendra_index_query_capacity = optional(number, 1)
+
+    kendra_index_storage_capacity = optional(number, 1)
+
+    kendra_index_tags = optional(list(map(string)), null)
+
+    user_token_configurations = optional(list(object({
+
+      json_token_type_configurations = optional(object({
+        group_attribute_field     = string
+        user_name_attribute_field = string
+      }))
+
+      jwt_token_type_configuration = optional(object({
+        claim_regex               = optional(string)
+        key_location              = optional(string)
+        group_attribute_field     = optional(string)
+        user_name_attribute_field = optional(string)
+        issuer                    = optional(string)
+        secret_manager_arn        = optional(string)
+        url                       = optional(string)
+      }))
+
+    })), null)
+
+    kendra_kms_key_id = optional(string, null)
+
+    kendra_index_user_context_policy = optional(string, null)
+
+    document_metadata_configurations = optional(list(object({
+      name = optional(string)
+      type = optional(string)
+      search = optional(object({
+        facetable   = optional(bool)
+        searchable  = optional(bool)
+        displayable = optional(bool)
+        sortable    = optional(bool)
+      }))
+      relevance = optional(object({
+        duration   = optional(string)
+        freshness  = optional(bool)
+        importance = optional(number)
+        rank_order = optional(string)
+        value_importance_items = optional(list(object({
+          key   = optional(string)
+          value = optional(number)
+        })))
+      }))
+    })), null)
+
+    kendra_index_role_arn = optional(string, null)
+
   }))
   default = []
 }
